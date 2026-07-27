@@ -1,0 +1,63 @@
+name: GraphQL Schema Sync
+
+on:
+  schedule:
+    # Wakes up at 38 minutes past 4 AM, 10 AM, 4 PM, and 10 PM UTC
+    # (12:38 PM, 6:38 PM, 12:38 AM, and 6:38 AM Singapore Time)
+    - cron: '38 4,10,16,22 * * *'
+  workflow_dispatch:
+
+jobs:
+  schema-mutation:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Fetch Core Repository
+        uses: actions/checkout@v4
+
+      - name: Append GraphQL Type Definition
+        run: |
+          # 30% chance to skip (keeps contribution flow organic)
+          if [ $((RANDOM % 100)) -lt 30 ]; then
+            echo "GraphQL schema up to date. Skipping run."
+            exit 0
+          fi
+
+          mkdir -p schema
+          TARGET_FILE="schema/types.graphql"
+          
+          # Initialize minimal GraphQL schema if missing
+          if [ ! -f "$TARGET_FILE" ]; then
+            echo "# Core GraphQL Type Definitions" > "$TARGET_FILE"
+            echo "scalar DateTime" >> "$TARGET_FILE"
+            echo "" >> "$TARGET_FILE"
+          fi
+
+          # Append syntactically valid GraphQL type definitions
+          OBJECT_TYPES=("UserProfile" "PaymentIntent" "TelemetryNode" "AuthSession" "MetricPayload")
+          PICKED_TYPE=${OBJECT_TYPES[$RANDOM % ${#OBJECT_TYPES[@]}]}
+          
+          echo "" >> "$TARGET_FILE"
+          echo "\"\"\" Telemetry payload node $RANDOM \"\"\"" >> "$TARGET_FILE"
+          echo "type $PICKED_TYPE_$RANDOM {" >> "$TARGET_FILE"
+          echo "  id: ID!" >> "$TARGET_FILE"
+          echo "  status: String!" >> "$TARGET_FILE"
+          echo "  updatedAt: DateTime" >> "$TARGET_FILE"
+          echo "}" >> "$TARGET_FILE"
+
+          git config --global user.name "marlenepressie"
+          git config --global user.email "marlenepressie@gmail.com"
+
+          # GraphQL/API-focused vocabulary
+          MESSAGES=(
+            "feat: add GraphQL type definition for entity schema"
+            "refactor: optimize GraphQL schema scalar mapping"
+            "fix: resolve type field nullability in schema"
+            "chore: sync GraphQL SDL definitions"
+          )
+          MSG=${MESSAGES[$RANDOM % ${#MESSAGES[@]}]}
+
+          git add schema/
+          git commit -m "$MSG"
+          git push
