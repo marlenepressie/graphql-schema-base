@@ -1,0 +1,10 @@
+# Core GraphQL Type Definitions
+scalar DateTime
+
+
+""" Telemetry payload node 21293 """
+type 24224 {
+  id: ID!
+  status: String!
+  updatedAt: DateTime
+}
