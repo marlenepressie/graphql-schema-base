@@ -407,3 +407,10 @@ type 1223 {
   status: String!
   updatedAt: DateTime
 }
+
+""" Telemetry payload node 13358 """
+type 20117 {
+  id: ID!
+  status: String!
+  updatedAt: DateTime
+}
