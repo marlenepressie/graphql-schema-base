@@ -911,3 +911,10 @@ type 711 {
   status: String!
   updatedAt: DateTime
 }
+
+""" Telemetry payload node 5179 """
+type 1907 {
+  id: ID!
+  status: String!
+  updatedAt: DateTime
+}
