@@ -1051,3 +1051,10 @@ type 8183 {
   status: String!
   updatedAt: DateTime
 }
+
+""" Telemetry payload node 2022 """
+type 4783 {
+  id: ID!
+  status: String!
+  updatedAt: DateTime
+}
